@@ -8,6 +8,9 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
+                SettingsSection(title: "Core ML Path", icon: "cpu") {
+                    CoreMLPathStatusView(status: model.coreMLStatus)
+                }
                 SettingsSection(title: "Scheduler", icon: "waveform.path.ecg") {
                     SchedulerPicker(model: model)
                 }
@@ -47,6 +50,51 @@ private struct SettingsSection<Content: View>: View {
             .background(.regularMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .shadow(color: .black.opacity(0.04), radius: 6, y: 2)
+        }
+    }
+}
+
+// MARK: - Core ML compute path
+
+private struct CoreMLPathStatusView: View {
+    let status: GenerationCoreMLStatus?
+
+    var body: some View {
+        if let status {
+            VStack(alignment: .leading, spacing: 10) {
+                pathRow(label: "DiT (transformer)", path: status.transformer)
+                pathRow(label: "VAE decoder", path: status.vae)
+
+                if status.usesSlowestFallback {
+                    Label("Slowest fallback (CPU only) — reinstall app if this persists", systemImage: "exclamationmark.triangle.fill")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                } else {
+                    Text(status.performanceNote)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        } else {
+            Text("Not loaded yet. Open the app main screen and wait for models to finish loading.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    @ViewBuilder
+    private func pathRow(label: String, path: CoreMLComputePath) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: path.isSlowestFallback ? "tortoise.fill" : "bolt.fill")
+                .foregroundStyle(path.isSlowestFallback ? .orange : .green)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label)
+                    .font(.subheadline.weight(.medium))
+                Text(path.displayName)
+                    .font(.caption)
+                    .foregroundStyle(path.isSlowestFallback ? .orange : .secondary)
+            }
+            Spacer()
         }
     }
 }

@@ -138,7 +138,18 @@ struct ContentView: View {
                     }
                 }
 
-                if let generationModel = viewModel.generationModel {
+                if let generationModel = viewModel.generationModel,
+                   let understandingModel = viewModel.understandingModel,
+                   let textChatModel = viewModel.textChatModel {
+                    NavigationLink(destination: BenchmarkView(
+                        generationModel: generationModel,
+                        understandingModel: understandingModel,
+                        textChatModel: textChatModel,
+                        settings: settingsViewModel
+                    )) {
+                        Image(systemName: "chart.bar.doc.horizontal").imageScale(.large)
+                    }
+
                     NavigationLink(destination: SettingsView(model: generationModel, settings: settingsViewModel)) {
                         Image(systemName: "gearshape.fill").imageScale(.large)
                     }

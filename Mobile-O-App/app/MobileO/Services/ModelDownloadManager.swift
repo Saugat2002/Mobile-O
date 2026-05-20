@@ -92,7 +92,6 @@ final class ModelDownloadManager: NSObject {
     private var session: URLSession!
     private var currentTask: URLSessionDownloadTask?
     private var currentFileIndex = 0
-    private var resumeData: Data?
     private var speedSamples: [(Date, Int64)] = []
     private var downloadStartTime: Date?
     /// Cumulative bytes from files that finished downloading (not counting current in-progress file).
@@ -100,10 +99,6 @@ final class ModelDownloadManager: NSObject {
     /// Current file's totalBytesWritten (reset per file).
     private var currentFileBytesWritten: Int64 = 0
 
-    // Persistent resume data path
-    private var resumeDataPath: URL {
-        modelsDirectory.appendingPathComponent(".resume_data")
-    }
     private var progressFilePath: URL {
         modelsDirectory.appendingPathComponent(".download_progress")
     }
@@ -164,12 +159,8 @@ final class ModelDownloadManager: NSObject {
 
     func pause() {
         guard state == .downloading else { return }
-        currentTask?.cancel(byProducingResumeData: { [weak self] data in
-            Task { @MainActor in
-                self?.resumeData = data
-                self?.saveResumeData(data)
-            }
-        })
+        currentTask?.cancel()
+        currentTask = nil
         state = .paused
         saveProgress()
     }
@@ -185,7 +176,6 @@ final class ModelDownloadManager: NSObject {
         state = .idle
         currentFileIndex = 0
         downloadedBytes = 0
-        resumeData = nil
         cleanupProgressFiles()
     }
 
@@ -236,8 +226,6 @@ final class ModelDownloadManager: NSObject {
 
             markComponentIfComplete(entry.component)
             currentFileIndex += 1
-            resumeData = nil
-            cleanupResumeData()
             saveProgress()
 
             // Continue to next file if still downloading
@@ -256,13 +244,7 @@ final class ModelDownloadManager: NSObject {
     private func downloadFile(from url: URL) async throws -> URL {
         try await withCheckedThrowingContinuation { continuation in
             self.downloadContinuation = continuation
-
-            if let data = resumeData {
-                currentTask = session.downloadTask(withResumeData: data)
-                resumeData = nil
-            } else {
-                currentTask = session.downloadTask(with: url)
-            }
+            currentTask = session.downloadTask(with: url)
             currentTask?.resume()
         }
     }
@@ -293,8 +275,8 @@ final class ModelDownloadManager: NSObject {
                 try? FileManager.default.removeItem(at: compiledURL)
                 try FileManager.default.moveItem(at: tempCompiledURL, to: compiledURL)
 
-                // Delete the raw .mlpackage to save disk space
-                try? FileManager.default.removeItem(at: packageURL)
+                // Keep the raw .mlpackage so we can self-heal by recompiling on-device
+                // if `.mlmodelc` becomes incompatible/corrupted.
 
                 completedComponents.insert("\(name)_compiled")
             } catch {
@@ -361,7 +343,6 @@ final class ModelDownloadManager: NSObject {
         currentFileIndex = info["fileIndex"] as? Int ?? 0
         bytesFromCompletedFiles = info["bytesFromCompletedFiles"] as? Int64 ?? 0
         downloadedBytes = bytesFromCompletedFiles
-        resumeData = try? Data(contentsOf: resumeDataPath)
 
         if currentFileIndex > 0 && currentFileIndex < Self.fileManifest.count {
             // We have partial progress — set state to paused so user can resume
@@ -374,18 +355,8 @@ final class ModelDownloadManager: NSObject {
         }
     }
 
-    private func saveResumeData(_ data: Data?) {
-        guard let data else { return }
-        try? data.write(to: resumeDataPath)
-    }
-
-    private func cleanupResumeData() {
-        try? FileManager.default.removeItem(at: resumeDataPath)
-    }
-
     private func cleanupProgressFiles() {
         try? FileManager.default.removeItem(at: progressFilePath)
-        cleanupResumeData()
     }
 }
 
@@ -438,12 +409,7 @@ extension ModelDownloadManager: URLSessionDownloadDelegate {
         guard let error else { return }
 
         MainActor.assumeIsolated {
-            // Extract resume data from the error if available
             let nsError = error as NSError
-            if let data = nsError.userInfo[NSURLSessionDownloadTaskResumeData] as? Data {
-                resumeData = data
-                saveResumeData(data)
-            }
 
             if nsError.code == NSURLErrorCancelled {
                 downloadContinuation?.resume(throwing: error)

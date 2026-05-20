@@ -31,6 +31,60 @@ struct RandomNumberGeneratorWithSeed: RandomNumberGenerator {
     }
 }
 
+/// Which Core ML compute devices actually loaded for a compiled model.
+public enum CoreMLComputePath: String, Sendable {
+    case all = "all"
+    case cpuAndGPU = "cpuAndGPU"
+    case cpuOnly = "cpuOnly"
+
+    public var displayName: String {
+        switch self {
+        case .all: "CPU + GPU + Neural Engine"
+        case .cpuAndGPU: "CPU + GPU"
+        case .cpuOnly: "CPU only (slowest)"
+        }
+    }
+
+    public var isSlowestFallback: Bool { self == .cpuOnly }
+
+    static func from(_ units: MLComputeUnits) -> CoreMLComputePath {
+        switch units {
+        case .all: .all
+        case .cpuAndGPU: .cpuAndGPU
+        case .cpuOnly: .cpuOnly
+        case .cpuAndNeuralEngine: .all
+        @unknown default: .cpuAndGPU
+        }
+    }
+}
+
+/// DiT + VAE Core ML load paths (shown in Settings for performance diagnosis).
+public struct GenerationCoreMLStatus: Sendable, Equatable {
+    public let transformer: CoreMLComputePath
+    public let vae: CoreMLComputePath
+
+    public var usesSlowestFallback: Bool {
+        transformer.isSlowestFallback || vae.isSlowestFallback
+    }
+
+    public var summary: String {
+        "DiT: \(transformer.displayName) · VAE: \(vae.displayName)"
+    }
+
+    public var performanceNote: String {
+        if usesSlowestFallback {
+            return "Using CPU-only fallback — generation will be much slower. Reinstall the app and re-download models."
+        }
+        if transformer == .cpuAndGPU && vae == .cpuAndGPU {
+            return "Using CPU+GPU (ANE unavailable or not selected for DiT/VAE)."
+        }
+        if transformer == .all && vae == .all {
+            return "Using CPU + GPU + Neural Engine for DiT/VAE."
+        }
+        return "Accelerated path active."
+    }
+}
+
 /// SANA text-to-image generation using FastVLM text encoding + CoreML diffusion.
 ///
 /// Pipeline: text → FastVLM encoder → conditioning connector → DiT denoising → VAE decode → image
@@ -65,6 +119,7 @@ public class MobileOGenerator {
     private var transformer: TransformerModel?
     private var vae: VAEModel?
     public private(set) var currentModelVariant: ModelVariant = .fp32
+    public private(set) var coreMLStatus: GenerationCoreMLStatus?
 
     private let vaeScalingFactor: Float = 0.41407
 
@@ -150,20 +205,46 @@ public class MobileOGenerator {
 
         let config = makeModelConfiguration(variant: variant)
 
-        try await withThrowingTaskGroup(of: Void.self) { group in
+        let modelDir = modelDirectory
+        let loaded = try await withThrowingTaskGroup(of: (String, TransformerModel?, VAEModel?).self) { group in
             group.addTask {
                 let transformer = try ModelFactory.createTransformer(
-                    variant: variant, configuration: config, modelDirectory: self.modelDirectory)
-                await MainActor.run { self.transformer = transformer }
+                    variant: variant, configuration: config, modelDirectory: modelDir)
+                return ("transformer", transformer, nil)
             }
             if self.vae == nil {
                 group.addTask {
                     let vae = try ModelFactory.createVAE(
-                        variant: variant, configuration: config, modelDirectory: self.modelDirectory)
-                    await MainActor.run { self.vae = vae }
+                        variant: variant, configuration: config, modelDirectory: modelDir)
+                    return ("vae", nil, vae)
                 }
             }
-            try await group.waitForAll()
+            var transformerResult: TransformerModel?
+            var vaeResult: VAEModel?
+            for try await (_, transformer, vae) in group {
+                if let transformer { transformerResult = transformer }
+                if let vae { vaeResult = vae }
+            }
+            return (transformerResult, vaeResult)
+        }
+
+        if let transformer = loaded.0 {
+            self.transformer = transformer
+        }
+        if let vae = loaded.1 {
+            self.vae = vae
+        }
+
+        if let transformer = self.transformer, let vae = self.vae {
+            let status = GenerationCoreMLStatus(
+                transformer: transformer.computePath,
+                vae: vae.computePath
+            )
+            self.coreMLStatus = status
+            print("[MobileO] CoreML generation path — \(status.summary)")
+            if status.usesSlowestFallback {
+                print("[MobileO] WARNING: CPU-only fallback active; expect very slow image generation.")
+            }
         }
 
         try await loadScheduler(schedulerType: schedulerType)
@@ -181,20 +262,30 @@ public class MobileOGenerator {
 
         let config = makeModelConfiguration(variant: variant)
 
-        try await withThrowingTaskGroup(of: Void.self) { group in
+        try await withThrowingTaskGroup(of: (TransformerModel?, VAEModel?).self) { group in
             group.addTask {
                 let transformer = try ModelFactory.createTransformer(
                     variant: variant, configuration: config, modelDirectory: self.modelDirectory)
-                await MainActor.run { self.transformer = transformer }
+                return (transformer, nil)
             }
             if needsVAESwitch {
                 group.addTask {
                     let vae = try ModelFactory.createVAE(
                         variant: variant, configuration: config, modelDirectory: self.modelDirectory)
-                    await MainActor.run { self.vae = vae }
+                    return (nil, vae)
                 }
             }
-            try await group.waitForAll()
+            for try await (transformer, vae) in group {
+                if let transformer { self.transformer = transformer }
+                if let vae { self.vae = vae }
+            }
+        }
+
+        if let transformer = self.transformer, let vae = self.vae {
+            coreMLStatus = GenerationCoreMLStatus(
+                transformer: transformer.computePath,
+                vae: vae.computePath
+            )
         }
 
         self.currentModelVariant = variant
@@ -221,7 +312,7 @@ public class MobileOGenerator {
 
     private func makeModelConfiguration(variant: ModelVariant) -> MLModelConfiguration {
         let config = MLModelConfiguration()
-        config.computeUnits = .cpuAndGPU
+        config.computeUnits = .all
         config.allowLowPrecisionAccumulationOnGPU = true
         if let device = metalDevice {
             config.preferredMetalDevice = device
@@ -646,6 +737,7 @@ extension MobileOGenerator {
     public func releaseModels() {
         transformer = nil
         vae = nil
+        coreMLStatus = nil
         clearMemoryPool()
     }
 

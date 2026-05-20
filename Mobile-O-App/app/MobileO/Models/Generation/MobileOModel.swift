@@ -17,6 +17,7 @@ class MobileOModel {
     public var running = false
     public var modelInfo = ""
     public var generationTime: String = ""
+    public var coreMLStatus: GenerationCoreMLStatus?
 
     public var inferenceTime: TimeInterval = 0
     public var currentStep: Int = 0
@@ -45,8 +46,9 @@ class MobileOModel {
     private var sharedTokenizer: Tokenizer?
     private let modelDirectory: URL?
 
-    nonisolated(unsafe) private let metalDevice: MTLDevice?
-    nonisolated(unsafe) private let metalCommandQueue: MTLCommandQueue?
+    nonisolated private let metalDevice: MTLDevice?
+    nonisolated private let metalCommandQueue: MTLCommandQueue?
+    /// Set once in `init`; read from `nonisolated` `multiArrayToImage`.
     nonisolated(unsafe) private var floatToRGBAPipeline: MTLComputePipelineState?
 
     public init(sharedFastVLM: FastVLM? = nil, sharedTokenizer: Tokenizer? = nil, modelDirectory: URL? = nil) {
@@ -93,8 +95,13 @@ class MobileOModel {
             modelInfo = "Loading \(modelVariant.rawValue)..."
             do {
                 try await sana.loadDiT(variant: modelVariant)
-                modelInfo = "Ready to generate (\(modelVariant.rawValue))"
-                } catch {
+                coreMLStatus = sana.coreMLStatus
+                if let status = sana.coreMLStatus {
+                    modelInfo = "Ready (\(modelVariant.rawValue)) — \(status.summary)"
+                } else {
+                    modelInfo = "Ready to generate (\(modelVariant.rawValue))"
+                }
+            } catch {
                 modelInfo = "Error: \(error.localizedDescription)"
             }
         } else {
@@ -138,9 +145,15 @@ class MobileOModel {
             try await sana.loadModels(variant: variant, schedulerType: schedulerType)
 
             self.generator = sana
-            modelInfo = "Ready to generate (\(variant.rawValue))"
+            self.coreMLStatus = sana.coreMLStatus
+            if let status = sana.coreMLStatus {
+                modelInfo = "Ready (\(variant.rawValue)) — \(status.summary)"
+            } else {
+                modelInfo = "Ready to generate (\(variant.rawValue))"
+            }
 
         } catch {
+            coreMLStatus = nil
             modelInfo = "Error loading models: \(error.localizedDescription)"
         }
     }
@@ -227,6 +240,21 @@ class MobileOModel {
         resetState()
     }
 
+    /// Full generation pipeline for benchmarks; returns stage timings without updating chat UI.
+    nonisolated public func benchmarkGeneration(
+        _ params: MobileOGenerator.GenerationParameters
+    ) async throws -> (timing: MobileOGenerator.TimingInfo, wallClockSeconds: TimeInterval) {
+        let start = Date()
+        let sana = await generator
+        guard let sana = sana else {
+            throw NSError(domain: "MobileOModel", code: -1,
+                         userInfo: [NSLocalizedDescriptionKey: "MobileOGenerator not loaded"])
+        }
+        let (imageArray, timing) = try await sana.generate(params)
+        _ = try multiArrayToImage(imageArray)
+        return (timing, Date().timeIntervalSince(start))
+    }
+
     /// Reset observable state to idle
     private func resetState() {
         running = false
@@ -238,6 +266,7 @@ class MobileOModel {
     public func releaseModels() {
         generator?.releaseModels()
         generator = nil
+        coreMLStatus = nil
     }
 
     // MARK: - Helper Functions
