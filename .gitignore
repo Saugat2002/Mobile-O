@@ -1,0 +1,15 @@
+models/
+*.pdf
+.DS_Store
+*.pyc
+PKG-INFO
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+venv/
+.venv/
+env/
+.ipynb_checkpoints/
+*.ipynb

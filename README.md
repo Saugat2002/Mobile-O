@@ -124,11 +124,28 @@ Mobile-O runs entirely on-device with no cloud dependency. We release the **full
 
 ## ⚙️ Setup
 
+**Mac (inference / local benchmark — Apple Silicon arm64 only):**
+
 ```bash
 conda create -n mobileo python=3.12 -y
 conda activate mobileo
-pip install -r requirements.txt
+python -c "import platform; print('arch:', platform.machine())"  # must be arm64
+pip install -r requirements-mac.txt
 ```
+
+> Use a native **arm64** conda env (`machine()` → `arm64`). Intel/Rosetta (`x86_64`) envs only get PyTorch 2.2.x and will not satisfy this file.
+
+**Linux with NVIDIA GPU (training):**
+
+```bash
+conda create -n mobileo python=3.12 -y
+conda activate mobileo
+pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 \
+  --index-url https://download.pytorch.org/whl/cu121
+pip install -r requirements-train.txt
+```
+
+> `requirements.txt` alone omits PyTorch and CUDA-only packages (`xformers`, `flash-attn`, `deepspeed`). Use `requirements-mac.txt` or `requirements-train.txt` so installs succeed on your platform.
 
 ---
 

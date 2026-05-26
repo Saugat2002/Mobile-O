@@ -14,7 +14,10 @@ from torch.nn.init import normal_
 
 from timm.models import register_model
 from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-from timm.layers import DropPath, SqueezeExcite
+try:
+    from timm.layers import DropPath, SqueezeExcite
+except ImportError:
+    from timm.models.layers import DropPath, SqueezeExcite
 
 
 def _cfg(url="", **kwargs):

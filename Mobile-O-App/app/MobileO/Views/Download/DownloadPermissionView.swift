@@ -36,6 +36,8 @@ struct DownloadPermissionView: View {
                         title: "One-Time Download", detail: "~3.6 GB")
                 infoRow(icon: "internaldrive.fill", color: .blue,
                         title: "Storage Required", detail: "~4 GB")
+                infoRow(icon: "memorychip", color: .indigo,
+                        title: "Paper target", detail: "8-bit LLM + FP32 Core ML, <2 GB")
                 infoRow(icon: "iphone.badge.checkmark", color: .green,
                         title: "After Setup", detail: "Fully offline")
 

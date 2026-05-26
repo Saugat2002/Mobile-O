@@ -7,7 +7,7 @@ Exports 5 components from the Mobile-O model:
   2. VAE Decoder        → CoreML FP32  (vae-decoder.mlpackage)
   3. Connector          → CoreML FP32  (connector.mlpackage)
   4. Vision Encoder     → CoreML FP16  (vision-encoder.mlpackage)
-  5. LLM                → MLX 4-bit    (llm/model.safetensors + config.json)
+  5. LLM                → MLX 8-bit    (llm/model.safetensors + config.json) — paper default
 
 Usage:
     python export.py                                     # Export all (default HF model)
@@ -345,6 +345,7 @@ def export_llm(model, output_dir: Path, model_path: Path, bits: int = 4):
     mx.save_safetensors(str(weights_file), quantized_weights, metadata={"format": "mlx"})
 
     total_size = sum(w.nbytes for w in quantized_weights.values())
+    print(f"  LLM weights ~{total_size / 1e6:.0f} MB on disk ({bits}-bit)")
     index_data = {
         "metadata": {"total_size": int(total_size)},
         "weight_map": {k: weights_file.name for k in quantized_weights},
@@ -389,7 +390,7 @@ def main():
     parser.add_argument("model_path", nargs="?", default=DEFAULT_MODEL, help=f"HuggingFace model ID or local path (default: {DEFAULT_MODEL})")
     parser.add_argument("--output-dir", default="exported_models", help="Output directory (default: exported_models)")
     parser.add_argument("--only", nargs="+", choices=ALL_COMPONENTS, help="Export only specific components")
-    parser.add_argument("--llm-bits", type=int, default=4, choices=[4, 8, 16, 32], help="LLM quantization bits (default: 4)")
+    parser.add_argument("--llm-bits", type=int, default=8, choices=[4, 8, 16, 32], help="LLM quantization bits (default: 8, paper)")
     args = parser.parse_args()
 
     raw_path = args.model_path
@@ -438,6 +439,9 @@ def main():
     for c in components:
         label, path = COMPONENT_OUTPUTS[c]
         print(f"  {label + ':':<11}{output_dir}/{path}")
+    if "llm" in components:
+        print("\nCopy `llm/` into the app Models folder (Xcode → Devices → Mobile-O → container → Library/Application Support/Models/llm).")
+        print("Verify config.json shows \"bits\": 8 before benchmarking memory.")
 
 if __name__ == "__main__":
     main()

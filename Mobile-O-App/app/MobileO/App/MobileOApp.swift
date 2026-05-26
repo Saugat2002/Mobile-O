@@ -8,7 +8,10 @@ struct MobileOApp: App {
     var body: some Scene {
         WindowGroup {
             if downloadManager.modelsReady {
-                ContentView(modelDirectory: downloadManager.modelsDirectory)
+                ContentView(
+                    modelDirectory: downloadManager.modelsDirectory,
+                    downloadManager: downloadManager
+                )
             } else {
                 ModelDownloadGateView(downloadManager: downloadManager)
             }

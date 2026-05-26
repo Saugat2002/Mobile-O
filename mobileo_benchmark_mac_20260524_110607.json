@@ -1,0 +1,1362 @@
+{
+  "run_id": "20260524_110607",
+  "created_at": "2026-05-24T11:07:38.543723",
+  "device_model": "Mac (Mac16,12, Apple M4)",
+  "os_version": "macOS 26.5",
+  "config": {
+    "warmup_runs": "1",
+    "measured_runs": "3",
+    "num_steps": "20",
+    "enable_cfg": "True",
+    "guidance_scale": "1.5",
+    "scheduler": "pytorch_dpm_solver",
+    "stack": "pytorch_mps_or_cuda",
+    "model_path": "/Users/saugatadhikari/Saugat/WORK/Mobileo/Mobile-O/models/Mobile-O-0.5B",
+    "generation_prompt": "a red rose with morning dew drops",
+    "caption_prompt": "What is in this image? Describe in one sentence.",
+    "chat_prompt": "Explain what a neural network is in two sentences.",
+    "caption_image": "/Users/saugatadhikari/Saugat/WORK/Mobileo/Mobile-O/assets/cute_cat.png"
+  },
+  "metrics": [
+    {
+      "task": "model_load",
+      "phase": "setup",
+      "run_index": 0,
+      "is_warmup": false,
+      "metric": "load_pretrained_s",
+      "value": 15.426559,
+      "unit": "s",
+      "notes": "tokenizer + weights + Sana/VAE init"
+    },
+    {
+      "task": "model_load",
+      "phase": "setup",
+      "run_index": 0,
+      "is_warmup": false,
+      "metric": "move_to_device_s",
+      "value": 1.943424,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "model_load",
+      "phase": "setup",
+      "run_index": 0,
+      "is_warmup": false,
+      "metric": "load_total_s",
+      "value": 17.369983,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "model_load",
+      "phase": "setup",
+      "run_index": 0,
+      "is_warmup": false,
+      "metric": "memory_footprint_peak_mb",
+      "value": 5578.234375,
+      "unit": "MB",
+      "notes": "peak during load"
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_resident_before_mb",
+      "value": 526.734375,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_footprint_before_mb",
+      "value": 526.734375,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_footprint_peak_mb",
+      "value": 540.46875,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_footprint_after_mb",
+      "value": 383.25,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_resident_after_mb",
+      "value": 383.25,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "wall_clock_s",
+      "value": 8.695523,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "text_encoding",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "tokenization_s",
+      "value": 0.003448,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "text_encoding",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "llm_encode_s",
+      "value": 0.796093,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "connector",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "connector_s",
+      "value": 0.037217,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "diffusion",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "diffusion_s",
+      "value": 6.248956,
+      "unit": "s",
+      "notes": "DiT steps"
+    },
+    {
+      "task": "image_generation",
+      "phase": "vae_decode",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "vae_s",
+      "value": 1.592134,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "pipeline_total_s",
+      "value": 8.695523,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "inference_steps",
+      "value": 20.0,
+      "unit": "count",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_resident_before_mb",
+      "value": 383.40625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_footprint_before_mb",
+      "value": 383.40625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_footprint_peak_mb",
+      "value": 402.984375,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_footprint_after_mb",
+      "value": 402.984375,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_resident_after_mb",
+      "value": 402.984375,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "wall_clock_s",
+      "value": 7.334648,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "text_encoding",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "tokenization_s",
+      "value": 0.000947,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "text_encoding",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "llm_encode_s",
+      "value": 0.029982,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "connector",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "connector_s",
+      "value": 0.003072,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "diffusion",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "diffusion_s",
+      "value": 6.0099,
+      "unit": "s",
+      "notes": "DiT steps"
+    },
+    {
+      "task": "image_generation",
+      "phase": "vae_decode",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "vae_s",
+      "value": 1.284898,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "pipeline_total_s",
+      "value": 7.334648,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "inference_steps",
+      "value": 20.0,
+      "unit": "count",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_resident_before_mb",
+      "value": 402.984375,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_footprint_before_mb",
+      "value": 402.984375,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_footprint_peak_mb",
+      "value": 415.765625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_footprint_after_mb",
+      "value": 415.765625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_resident_after_mb",
+      "value": 415.765625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "wall_clock_s",
+      "value": 7.2488,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "text_encoding",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "tokenization_s",
+      "value": 0.001129,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "text_encoding",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "llm_encode_s",
+      "value": 0.025308,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "connector",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "connector_s",
+      "value": 0.004845,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "diffusion",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "diffusion_s",
+      "value": 5.924393,
+      "unit": "s",
+      "notes": "DiT steps"
+    },
+    {
+      "task": "image_generation",
+      "phase": "vae_decode",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "vae_s",
+      "value": 1.288629,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "pipeline_total_s",
+      "value": 7.2488,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "inference_steps",
+      "value": 20.0,
+      "unit": "count",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_resident_before_mb",
+      "value": 415.78125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_footprint_before_mb",
+      "value": 415.78125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_footprint_peak_mb",
+      "value": 423.765625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_footprint_after_mb",
+      "value": 423.765625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_resident_after_mb",
+      "value": 423.765625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "wall_clock_s",
+      "value": 7.341038,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "text_encoding",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "tokenization_s",
+      "value": 0.003382,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "text_encoding",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "llm_encode_s",
+      "value": 0.040436,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "connector",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "connector_s",
+      "value": 0.006475,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "diffusion",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "diffusion_s",
+      "value": 5.976219,
+      "unit": "s",
+      "notes": "DiT steps"
+    },
+    {
+      "task": "image_generation",
+      "phase": "vae_decode",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "vae_s",
+      "value": 1.297523,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "pipeline_total_s",
+      "value": 7.341038,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_generation",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "inference_steps",
+      "value": 20.0,
+      "unit": "count",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_resident_before_mb",
+      "value": 423.765625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_footprint_before_mb",
+      "value": 423.765625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_footprint_peak_mb",
+      "value": 423.796875,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_footprint_after_mb",
+      "value": 131.5,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_resident_after_mb",
+      "value": 131.5,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "vision_encoder",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "vision_encoder_s",
+      "value": 1.736013,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "time_to_first_token_s",
+      "value": 24.742287,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "total_s",
+      "value": 26.820106,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "tokens_generated",
+      "value": 22.0,
+      "unit": "count",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "tokens_per_second",
+      "value": 0.82028,
+      "unit": "tok/s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_resident_before_mb",
+      "value": 132.453125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_footprint_before_mb",
+      "value": 132.453125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_footprint_peak_mb",
+      "value": 154.984375,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_footprint_after_mb",
+      "value": 125.34375,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_resident_after_mb",
+      "value": 125.34375,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "vision_encoder",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "vision_encoder_s",
+      "value": 0.246942,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "time_to_first_token_s",
+      "value": 0.765058,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "total_s",
+      "value": 1.446502,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "tokens_generated",
+      "value": 22.0,
+      "unit": "count",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "tokens_per_second",
+      "value": 15.209102,
+      "unit": "tok/s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_resident_before_mb",
+      "value": 126.328125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_footprint_before_mb",
+      "value": 126.328125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_footprint_peak_mb",
+      "value": 148.5625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_footprint_after_mb",
+      "value": 147.890625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_resident_after_mb",
+      "value": 147.890625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "vision_encoder",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "vision_encoder_s",
+      "value": 0.142251,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "time_to_first_token_s",
+      "value": 0.589741,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "total_s",
+      "value": 3.069861,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "tokens_generated",
+      "value": 22.0,
+      "unit": "count",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "tokens_per_second",
+      "value": 7.166448,
+      "unit": "tok/s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_resident_before_mb",
+      "value": 148.625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_footprint_before_mb",
+      "value": 148.625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_footprint_peak_mb",
+      "value": 192.078125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_footprint_after_mb",
+      "value": 191.953125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_resident_after_mb",
+      "value": 191.953125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "vision_encoder",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "vision_encoder_s",
+      "value": 0.074811,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "time_to_first_token_s",
+      "value": 0.515786,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "total_s",
+      "value": 1.188142,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "tokens_generated",
+      "value": 22.0,
+      "unit": "count",
+      "notes": ""
+    },
+    {
+      "task": "image_captioning",
+      "phase": "llm_decode",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "tokens_per_second",
+      "value": 18.516307,
+      "unit": "tok/s",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_resident_before_mb",
+      "value": 192.015625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_footprint_before_mb",
+      "value": 192.015625,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_footprint_peak_mb",
+      "value": 220.859375,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_footprint_after_mb",
+      "value": 200.078125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "memory_resident_after_mb",
+      "value": 200.078125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "time_to_first_token_s",
+      "value": 0.913468,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "total_s",
+      "value": 2.623516,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "tokens_generated",
+      "value": 29.0,
+      "unit": "count",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 0,
+      "is_warmup": true,
+      "metric": "tokens_per_second",
+      "value": 11.053869,
+      "unit": "tok/s",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_resident_before_mb",
+      "value": 200.828125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_footprint_before_mb",
+      "value": 200.828125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_footprint_peak_mb",
+      "value": 218.4375,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_footprint_after_mb",
+      "value": 218.328125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "memory_resident_after_mb",
+      "value": 218.328125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "time_to_first_token_s",
+      "value": 0.048835,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "total_s",
+      "value": 1.758125,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "tokens_generated",
+      "value": 29.0,
+      "unit": "count",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 1,
+      "is_warmup": false,
+      "metric": "tokens_per_second",
+      "value": 16.494843,
+      "unit": "tok/s",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_resident_before_mb",
+      "value": 218.328125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_footprint_before_mb",
+      "value": 218.328125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_footprint_peak_mb",
+      "value": 219.078125,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_footprint_after_mb",
+      "value": 218.046875,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "memory_resident_after_mb",
+      "value": 218.046875,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "time_to_first_token_s",
+      "value": 0.044319,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "total_s",
+      "value": 0.886681,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "tokens_generated",
+      "value": 29.0,
+      "unit": "count",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 2,
+      "is_warmup": false,
+      "metric": "tokens_per_second",
+      "value": 32.706226,
+      "unit": "tok/s",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_resident_before_mb",
+      "value": 218.046875,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_footprint_before_mb",
+      "value": 218.046875,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_footprint_peak_mb",
+      "value": 218.75,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_footprint_after_mb",
+      "value": 190.109375,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "total",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "memory_resident_after_mb",
+      "value": 190.109375,
+      "unit": "MB",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "time_to_first_token_s",
+      "value": 0.045273,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "total_s",
+      "value": 1.391071,
+      "unit": "s",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "tokens_generated",
+      "value": 29.0,
+      "unit": "count",
+      "notes": ""
+    },
+    {
+      "task": "text_chat",
+      "phase": "llm_decode",
+      "run_index": 3,
+      "is_warmup": false,
+      "metric": "tokens_per_second",
+      "value": 20.847243,
+      "unit": "tok/s",
+      "notes": ""
+    },
+    {
+      "task": "meta",
+      "phase": "config",
+      "run_index": 0,
+      "is_warmup": false,
+      "metric": "warmup_runs",
+      "value": 1.0,
+      "unit": "count",
+      "notes": ""
+    },
+    {
+      "task": "meta",
+      "phase": "config",
+      "run_index": 0,
+      "is_warmup": false,
+      "metric": "measured_runs",
+      "value": 3.0,
+      "unit": "count",
+      "notes": ""
+    }
+  ]
+}

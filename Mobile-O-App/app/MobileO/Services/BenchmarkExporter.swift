@@ -17,6 +17,12 @@ struct BenchmarkMetricRow: Codable {
 }
 
 enum BenchmarkExporter {
+    static func iso8601Timestamp(from date: Date = Date()) -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter.string(from: date)
+    }
+
     static func makeRunId() -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyyMMdd_HHmmss"
@@ -41,7 +47,7 @@ enum BenchmarkExporter {
         case "iPhone18,1", "iPhone18,2", "iPhone18,3", "iPhone18,4":
             return "iPhone 17"
         case "iPhone17,1", "iPhone17,2", "iPhone17,3", "iPhone17,4":
-            return "iPhone 16"
+            return "iPhone 17 Pro"
         case "iPhone16,1", "iPhone16,2":
             return "iPhone 15 Pro"
         case "iPhone15,4", "iPhone15,5":
@@ -55,12 +61,10 @@ enum BenchmarkExporter {
         }
     }
 
+    @discardableResult
     static func writeCSV(rows: [BenchmarkMetricRow], runId: String) throws -> URL {
-        let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("Benchmarks", isDirectory: true)
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-
-        let fileURL = dir.appendingPathComponent("mobileo_benchmark_\(runId).csv")
+        try BenchmarkStorage.ensureDirectories()
+        let fileURL = BenchmarkStorage.csvURL(runId: runId)
         var lines: [String] = [
             "run_id,device_model,os_version,task,phase,run_index,is_warmup,metric,value,unit,notes"
         ]
@@ -78,15 +82,13 @@ enum BenchmarkExporter {
         return fileURL
     }
 
+    @discardableResult
     static func writeJSON(rows: [BenchmarkMetricRow], runId: String, config: [String: String]) throws -> URL {
-        let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("Benchmarks", isDirectory: true)
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-
-        let fileURL = dir.appendingPathComponent("mobileo_benchmark_\(runId).json")
+        try BenchmarkStorage.ensureDirectories()
+        let fileURL = BenchmarkStorage.jsonURL(runId: runId)
         let payload: [String: Any] = [
             "run_id": runId,
-            "created_at": ISO8601DateFormatter().string(from: Date()),
+            "created_at": iso8601Timestamp(),
             "config": config,
             "metrics": rows.map { row in
                 [

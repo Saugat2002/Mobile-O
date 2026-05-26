@@ -15,19 +15,24 @@ class mobileoConfig(Qwen2Config):
     model_type = "mobileo_inference"
 
 
+class mobileoHFConfig(mobileoConfig):
+    """Matches HuggingFace `config.json` model_type (`mobile_o_inference`)."""
+    model_type = "mobile_o_inference"
+
+
 class mobileoModel(LlavaMetaModel, Qwen2Model):
-    config_class = mobileoConfig
+    config_class = mobileoHFConfig
 
     def __init__(self, config: Qwen2_5_VLConfig):
         super(mobileoModel, self).__init__(config)
 
 
 class mobileoForInferenceLM(Qwen2ForCausalLM, LlavaMetaForCausalLM):
-    config_class = mobileoConfig
+    config_class = mobileoHFConfig
 
     def __init__(self, config):
         super(mobileoForInferenceLM, self).__init__(config)
-        config.model_type = "mobileo_inference"
+        config.model_type = "mobile_o_inference"
         config.is_train = False
         self.model = mobileoModel(config)
         self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
@@ -114,7 +119,7 @@ class mobileoForInferenceLM(Qwen2ForCausalLM, LlavaMetaForCausalLM):
             return_dict=True,
         )
         img_hidden_states = outputs.hidden_states
-        output_img = self.sample_images(img_hidden_states, with_cfg=with_cfg)
+        output_img = self.sample_images(img_hidden_states, with_cfg=with_cfg, **kwargs)
         return output_img
     
     def sample_images(
@@ -125,6 +130,7 @@ class mobileoForInferenceLM(Qwen2ForCausalLM, LlavaMetaForCausalLM):
         num_inference_steps: int = 20,
         num_images_per_prompt: int = 1,
         return_tensor=False,
+        with_tqdm: bool = True,
     ):
         device = pred_latents[0].device
 
@@ -145,7 +151,9 @@ class mobileoForInferenceLM(Qwen2ForCausalLM, LlavaMetaForCausalLM):
 
         self.model.noise_scheduler.set_timesteps(num_inference_steps)
 
-        for i,t in enumerate(tqdm(self.model.noise_scheduler.timesteps, desc="Sampling images")):
+        timesteps = self.model.noise_scheduler.timesteps
+        step_iter = tqdm(timesteps, desc="Sampling images") if with_tqdm else timesteps
+        for i, t in enumerate(step_iter):
             if with_cfg:
                 latent_model_input = torch.cat([latents] * 2)
             else:
@@ -190,4 +198,5 @@ class mobileoForInferenceLM(Qwen2ForCausalLM, LlavaMetaForCausalLM):
     
 
 AutoConfig.register("mobileo_inference", mobileoConfig)
-AutoModelForCausalLM.register(mobileoConfig, mobileoForInferenceLM)
+AutoConfig.register("mobile_o_inference", mobileoHFConfig)
+AutoModelForCausalLM.register(mobileoHFConfig, mobileoForInferenceLM)

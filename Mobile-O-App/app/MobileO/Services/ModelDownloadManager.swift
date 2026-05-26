@@ -33,6 +33,13 @@ final class ModelDownloadManager: NSObject {
 
     /// True when all models are on disk and compiled — gates access to the main app.
     private(set) var modelsReady = false
+    /// True when `llm/config.json` reports 8-bit weights (paper deployment).
+    private(set) var paperPackAligned = false
+    /// Non-nil when LLM pack does not match paper (e.g. HuggingFace still serves 4-bit).
+    private(set) var llmAlignmentNotice: String?
+
+    private var activeManifest: [(remotePath: String, localPath: String, component: String)] = []
+    private var llmOnlyDownload = false
 
     /// Check the filesystem for all required model files.
     func checkModelsReady() {
@@ -43,6 +50,46 @@ final class ModelDownloadManager: NSObject {
         }
         let llmReady = fm.fileExists(atPath: dir.appendingPathComponent("llm/model.safetensors").path)
         modelsReady = coreMLReady && llmReady
+        refreshPaperAlignment()
+    }
+
+    func refreshPaperAlignment() {
+        let llmDir = modelsDirectory.appendingPathComponent("llm")
+        guard FileManager.default.fileExists(atPath: llmDir.appendingPathComponent("config.json").path) else {
+            paperPackAligned = false
+            llmAlignmentNotice = nil
+            return
+        }
+        let bits = LLMPackReader.bits(at: llmDir)
+        paperPackAligned = bits == ModelPackRequirements.llmBits
+        if let bits, bits != ModelPackRequirements.llmBits {
+            llmAlignmentNotice = """
+            Installed LLM is \(bits)-bit; the paper uses \(ModelPackRequirements.llmBits)-bit MLX + Core ML FP32 with <2 GB target. \
+            HuggingFace may still ship 4-bit (~356 MB). Re-export: `python export.py --only llm --llm-bits 8` and replace the app `Models/llm/` folder via Xcode, or re-download when the Hub pack updates.
+            """
+        } else {
+            llmAlignmentNotice = nil
+        }
+    }
+
+    /// Re-download only `llm/` (e.g. after Hub publishes 8-bit weights).
+    func startLLMReDownload() {
+        switch state {
+        case .downloading, .compiling:
+            return
+        default:
+            break
+        }
+        modelsReady = false
+        try? FileManager.default.removeItem(at: modelsDirectory.appendingPathComponent("llm"))
+        llmOnlyDownload = true
+        activeManifest = Self.fileManifest.filter { $0.component == "llm" }
+        currentFileIndex = 0
+        bytesFromCompletedFiles = 0
+        downloadedBytes = 0
+        totalBytes = 450_000_000
+        completedComponents.remove("llm")
+        startDownload()
     }
 
     /// Root directory where downloaded models live.
@@ -126,7 +173,7 @@ final class ModelDownloadManager: NSObject {
 
     /// Check available disk space. Returns true if there's enough room (~5 GB buffer).
     func hasSufficientDiskSpace() -> Bool {
-        let requiredBytes: Int64 = 5_000_000_000 // ~5 GB for download + compilation
+        let requiredBytes: Int64 = llmOnlyDownload ? 800_000_000 : 5_000_000_000
         let resourceValues = try? modelsDirectory.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
         let available = resourceValues?.volumeAvailableCapacityForImportantUsage ?? 0
         return available >= requiredBytes
@@ -138,6 +185,10 @@ final class ModelDownloadManager: NSObject {
 
         if case .failed = state {
             // Retry: keep currentFileIndex where it was
+        }
+
+        if activeManifest.isEmpty {
+            activeManifest = Self.fileManifest
         }
 
         if !hasSufficientDiskSpace() {
@@ -176,6 +227,8 @@ final class ModelDownloadManager: NSObject {
         state = .idle
         currentFileIndex = 0
         downloadedBytes = 0
+        llmOnlyDownload = false
+        activeManifest = []
         cleanupProgressFiles()
     }
 
@@ -187,13 +240,22 @@ final class ModelDownloadManager: NSObject {
     // MARK: - Sequential Download Engine
 
     private func downloadNextFile() async {
-        guard currentFileIndex < Self.fileManifest.count else {
-            // All files downloaded — start compilation
+        let manifest = activeManifest.isEmpty ? Self.fileManifest : activeManifest
+        guard currentFileIndex < manifest.count else {
+            if llmOnlyDownload {
+                llmOnlyDownload = false
+                activeManifest = []
+                cleanupProgressFiles()
+                state = .completed
+                checkModelsReady()
+                ModelPackRequirements.markPackInstalled()
+                return
+            }
             await compileModels()
             return
         }
 
-        let entry = Self.fileManifest[currentFileIndex]
+        let entry = manifest[currentFileIndex]
         currentFileName = entry.localPath
 
         // Skip if file already exists
@@ -288,12 +350,15 @@ final class ModelDownloadManager: NSObject {
         compilationProgress = ""
         cleanupProgressFiles()
         state = .completed
+        checkModelsReady()
+        ModelPackRequirements.markPackInstalled()
     }
 
     // MARK: - Component Tracking
 
     private func markComponentIfComplete(_ component: String) {
-        let componentFiles = Self.fileManifest.filter { $0.component == component }
+        let manifest = activeManifest.isEmpty ? Self.fileManifest : activeManifest
+        let componentFiles = manifest.filter { $0.component == component }
         let allExist = componentFiles.allSatisfy { entry in
             FileManager.default.fileExists(atPath: modelsDirectory.appendingPathComponent(entry.localPath).path)
         }

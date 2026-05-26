@@ -13,7 +13,7 @@ def load_pretrained_model(model_path):
     warnings.filterwarnings("ignore", message=".*copying from a non-meta parameter.*")
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
     model = mobileoForInferenceLM.from_pretrained(
-        model_path, low_cpu_mem_usage=True, torch_dtype=torch.float16, device_map="auto"
+        model_path, low_cpu_mem_usage=True, torch_dtype=torch.float16
     )
     mm_use_im_start_end = getattr(model.config, "mm_use_im_start_end", False)
     mm_use_im_patch_token = getattr(model.config, "mm_use_im_patch_token", True)

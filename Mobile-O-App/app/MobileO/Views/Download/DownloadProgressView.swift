@@ -143,6 +143,14 @@ struct DownloadProgressView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
 
+            if !downloadManager.paperPackAligned, let notice = downloadManager.llmAlignmentNotice {
+                Text(notice)
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 24)
+            }
+
             Button(action: { downloadManager.checkModelsReady() }) {
                 Text("Get Started")
                     .font(.system(size: 17, weight: .semibold, design: .rounded))

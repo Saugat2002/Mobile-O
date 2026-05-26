@@ -1,0 +1,13 @@
+# Linux CUDA training extras (not supported on Mac).
+# Install CUDA PyTorch first, then this file:
+#
+#   pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 \
+#       --index-url https://download.pytorch.org/whl/cu121
+#   pip install -r requirements-train.txt
+
+-r requirements.txt
+
+xformers==0.0.26.post1
+flash_attn==2.6.2
+deepspeed
+bitsandbytes

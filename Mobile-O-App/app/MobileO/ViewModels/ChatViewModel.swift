@@ -130,6 +130,7 @@ class ChatViewModel {
             prompt: cleanPrompt,
             numSteps: numSteps,
             guidanceScale: enableCFG ? Float(guidanceScale) : 0.0,
+            enableCFG: enableCFG,
             seed: seed,
             progressCallback: nil
         )

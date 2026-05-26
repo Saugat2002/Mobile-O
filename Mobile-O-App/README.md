@@ -135,7 +135,7 @@ The `export.py` script converts the PyTorch checkpoint into 5 on-device componen
 | VAE Decoder | CoreML FP32 | `vae_decoder.mlpackage` |
 | Connector | CoreML FP32 | `connector.mlpackage` |
 | Vision Encoder | CoreML FP16 | `vision_encoder.mlpackage` |
-| LLM (Qwen2) | MLX 4-bit | `llm/` (weights, config, tokenizer files) |
+| LLM (Qwen2) | MLX 8-bit (paper default) | `llm/` (weights, config, tokenizer files) |
 
 ```bash
 # Downloads from HuggingFace automatically
@@ -168,7 +168,7 @@ python export.py [--model MODEL] [--output-dir DIR] [--only COMPONENT...] [--llm
 | `--model` | `Amshaker/Mobile-O-0.5B` | HuggingFace model ID or local path |
 | `--output-dir` | `exported_models` | Where to save exported models |
 | `--only` | all | Space-separated list: `dit`, `vae`, `connector`, `vision`, `llm` |
-| `--llm-bits` | `4` | LLM quantization: 4, 8, 16, or 32 bits |
+| `--llm-bits` | `8` | LLM quantization: 4, 8, 16, or 32 bits (paper: 8) |
 
 ### Copy Exported Models into the App
 
